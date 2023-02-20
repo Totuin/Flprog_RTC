@@ -2,7 +2,7 @@
 #include <LiquidCrystal_I2C.h>
 
 FLProgI2C wireDevice(0);
-FLProgI2CRTC _RTC1(&wireDevice);
+FLProgDS1307 _RTC1(&wireDevice);
 
 LiquidCrystal_I2C _lcd1(0x27, 16, 2);
 String _RTC1_GetTime1_StrOut;

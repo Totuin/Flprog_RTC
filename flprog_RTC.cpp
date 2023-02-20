@@ -1,30 +1,14 @@
 #include "flprog_RTC.h"
 
-FLProgI2CRTC::FLProgI2CRTC(FLProgI2C *device, uint8_t addr)
-{
-    i2cDevice = device;
-    addres = addr;
-}
-
 void FLProgI2CRTC::pool()
 {
     if ((startReadTime == 0) || (flprog::isTimer(startReadTime, reqestPeriod)))
     {
-        startReadTime = millis();
-        startCalculationTime = millis();
         readTime();
     }
-    if (flprog::isTimer(startCalculationTime, 250))
+    else
     {
-        if (isInit)
-        {
-            calculationTime();
-        }
-        else
-        {
-            readTime();
-            startReadTime = millis();
-        }
+        calculationTime();
     }
 }
 
@@ -53,13 +37,18 @@ uint8_t FLProgI2CRTC::encodeRegister(int8_t data)
 
 void FLProgI2CRTC::initDevice()
 {
-    if (i2cDevice->findAddr(addres))
+    if (!i2cDevice->findAddr(addres))
     {
-        isInit = true;
-        readTime();
+        codeError = FLPROG_SENSOR_DEVICE_NOT_FOUND_ERROR;
         return;
     }
-    codeError = FLPROG_SENSOR_DEVICE_NOT_FOUND_ERROR;
+    setInitData();
+    if (codeError)
+    {
+        return;
+    }
+    isInit = true;
+    readTime();
 }
 
 void FLProgI2CRTC::readTime()
@@ -69,7 +58,6 @@ void FLProgI2CRTC::readTime()
         initDevice();
         return;
     }
-
     uint8_t data[7];
     codeError = i2cDevice->fullWrite(addres, 0x0);
     if (codeError)
@@ -90,6 +78,8 @@ void FLProgI2CRTC::readTime()
     now.date = unpackRegister(data[4]);
     now.month = unpackRegister(data[5]);
     now.year = unpackRegister(data[6]);
+    startCalculationTime = millis();
+    startReadTime = startCalculationTime;
 }
 
 void FLProgI2CRTC::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint8_t year, uint8_t day)
@@ -160,87 +150,121 @@ int FLProgI2CRTC::getTemperature(void)
     return (getTemperatureRaw() >> 2);
 }
 
-void FLProgI2CRTC::calculationTime()
+//---------------DS1307-----------------
+FLProgDS1307::FLProgDS1307(FLProgI2C *device, uint8_t addr)
 {
-    uint32_t currentTime = millis();
-    uint32_t newSec = (flprog::difference32(startCalculationTime, (currentTime))) / 1000;
-    if (!(newSec > 0))
-    {
-        return;
-    }
-    startCalculationTime = flprog::timeBack(currentTime - (newSec * 1000));
-    for (uint32_t i = 0; i < newSec; i++)
-    {
-        addSecond();
-    }
+    i2cDevice = device;
+    addres = addr;
 }
 
-void FLProgI2CRTC::addSecond()
+void FLProgDS1307::setInitData()
 {
-    if (now.second < 59)
+    uint8_t varI = i2cDevice->fullReadReg(addres, 0x00);
+    codeError = i2cDevice->getErrorCode();
+    if (codeError)
     {
-        now.second++;
+        isInit = false;
         return;
     }
-    now.second = 0;
-    addMinute();
+    if (varI & 0b10000000)
+    {
+        codeError = i2cDevice->fullWriteReg(addres, 0x00, (varI & ~0b10000000));
+        if (codeError)
+        {
+            isInit = false;
+            return;
+        }
+    } //(если установлен 7 бит в 0 регистре, то сбрасываем его - запускаем генератор)
+    varI = i2cDevice->fullReadReg(addres, 0x02);
+    codeError = i2cDevice->getErrorCode();
+    if (codeError)
+    {
+        isInit = false;
+        return;
+    }
+    if (varI & 0b01000000)
+    {
+        codeError = i2cDevice->fullWriteReg(addres, 0x02, (varI & ~0b01000000));
+        if (codeError)
+        {
+            isInit = false;
+            return;
+        }
+    } //(если установлен 6 бит в 2 регистре, то сбрасываем его - переводим модуль в 24 часовой режим)
+    varI = i2cDevice->fullReadReg(addres, 0x07);
+    codeError = i2cDevice->getErrorCode();
+    if (codeError)
+    {
+        isInit = false;
+        return;
+    }
+    if ((varI & 0b00000011) || !(varI & 0b00010000))
+    {
+        codeError = i2cDevice->fullWriteReg(addres, 0x07, ((varI & ~0b00000011) | 0b00010000));
+        if (codeError)
+        {
+            isInit = false;
+            return;
+        }
+    } //(если установлены 1 и 0 биты или сброшен 4 бит в 7 регистре, то сбрасываем 1 с 0 битами, а 4 устанавливаем - выводим меандр с частотой 1 Гц на выводе SQW/OUT модуля)
 }
 
-void FLProgI2CRTC::addMinute()
+//---------------DS3231-----------------
+FLProgDS3231::FLProgDS3231(FLProgI2C *device, uint8_t addr)
 {
-    if (now.minute < 59)
-    {
-        now.minute++;
-        return;
-    }
-    now.minute = 0;
-    addHour();
+    i2cDevice = device;
+    addres = addr;
 }
 
-void FLProgI2CRTC::addHour()
+void FLProgDS3231::setInitData()
 {
-    if (now.hour < 23)
+    uint8_t varI = i2cDevice->fullReadReg(addres, 0x02);
+    codeError = i2cDevice->getErrorCode();
+    if (codeError)
     {
-        now.hour++;
+        isInit = false;
         return;
     }
-    now.hour = 0;
-    addData();
-}
+    if (varI & 0b01000000)
+    {
 
-void FLProgI2CRTC::addData()
-{
-    uint8_t daysInMonth;
-    if (now.month == 2)
+        codeError = i2cDevice->fullWriteReg(addres, 0x02, (varI & ~0b01000000));
+        if (codeError)
+        {
+            isInit = false;
+            return;
+        }
+    } //(если установлен 6 бит в 2 регистре, то сбрасываем его - переводим модуль в 24 часовой режим)
+    varI = i2cDevice->fullReadReg(addres, 0x0E);
+    codeError = i2cDevice->getErrorCode();
+    if (codeError)
     {
-        daysInMonth = 28 + ((2000 + now.year) % 4 ? 0 : 1);
-    }
-    else
-    {
-        daysInMonth = 30 + ((now.month + (now.month > 7 ? 1 : 0)) % 2);
-    }
-    now.day++;
-    if (now.day > 6)
-    {
-        now.day = 0;
-    }
-    if (now.date < (daysInMonth - 1))
-    {
-        now.date++;
-
+        isInit = false;
         return;
     }
-    now.date = 1;
-    addMonth();
-}
-
-void FLProgI2CRTC::addMonth()
-{
-    if (now.month < 12)
+    if (varI & 0b11011111)
     {
-        now.month++;
+        codeError = i2cDevice->fullWriteReg(addres, 0x0E, (varI & ~0b11011111));
+        if (codeError)
+        {
+            isInit = false;
+            return;
+        }
+    } //(если установлены 7,6,4,3,2,1 и 0 биты в 14 регистре, то сбрасываем их - разрешаем генератору работать от батарейки, запрещаем выводу SQW работать от батарейки, выводим меандр с частотой 1Гц на вывод SQW, переводим вывод INT/SQW в режим SQW, запрещаем прерывания будильников)
+    varI = i2cDevice->fullReadReg(addres, 0x0F);
+    codeError = i2cDevice->getErrorCode();
+    if (codeError)
+    {
+        isInit = false;
         return;
     }
-    now.month = 1;
-    now.year++;
+    if ((varI & 0b10000011) || !(varI & 0b00001000))
+    {
+        codeError = i2cDevice->fullWriteReg(addres, 0x0F, ((varI & ~0b10000011) | 0b00001000));
+        if (codeError)
+        {
+            isInit = false;
+            return;
+        }
+    } //(если установлены 7,1 и 0 биты или сброшен 3 бит в 15 регистре, то сбрасываем 7,1 и 0 биты, а 3 устанавливаем - сбрасываем флаг остановки генератора, разрешаем меандр с частотой 32768Гц на выводе 32kHz, сбрасываем флаги будильников)
 }

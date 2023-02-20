@@ -1,7 +1,7 @@
 #include "flprog_RTC.h"
 
 FLProgI2C wireDevice(0);
-FLProgI2CRTC rtc(&wireDevice);
+FLProgDS3231 rtc(&wireDevice);
 DateTime dataTime;
 bool _gen1I = 0;
 bool _gen1O = 0;
@@ -16,38 +16,68 @@ void setup()
 {
   wireDevice.begin();
   Serial.begin(9600);
-  get3231Date();
+  dataTime = rtc.getTime();
 }
 void loop()
 {
   rtc.pool();
 
-  if (canResiveData) {
-    if (Serial.available()) {
+  if (canResiveData)
+  {
+    if (Serial.available())
+    {
       inChar = (char)Serial.read();
-      if (inChar == 1) {
+      if (inChar == 1)
+      {
         tempIndex = 0;
         hasData = 0;
-      } else {
-        if (inChar == 2) {
+      }
+      else
+      {
+        if (inChar == 2)
+        {
           inputString = "";
-        } else {
-          if (inChar == 3) {
-            switch (tempIndex) {
-              case 0: set3231Date(dataTime.second, dataTime.minute, (inputString.toInt()), dataTime.date, dataTime.month, dataTime.year, dataTime.day); break;
-              case 1: set3231Date(dataTime.second, (inputString.toInt()), dataTime.hour, dataTime.date, dataTime.month, dataTime.year, dataTime.day); break;
-              case 2: set3231Date((inputString.toInt()), dataTime.minute, dataTime.hour, dataTime.date, dataTime.month, dataTime.year, dataTime.day)    ; break;
-              case 3: set3231Date(dataTime.second, dataTime.minute, dataTime.hour, (inputString.toInt()), dataTime.month, dataTime.year, dataTime.day);  break;
-              case 4: set3231Date(dataTime.second, dataTime.minute, dataTime.hour, dataTime.date, (inputString.toInt()), dataTime.year, dataTime.day) ; break;
-              case 5: set3231Date(dataTime.second, dataTime.minute, dataTime.hour, dataTime.date, dataTime.month, ((inputString.toInt())+2000), dataTime.day); break;
-              case 6: set3231Date(dataTime.second, dataTime.minute, dataTime.hour, dataTime.date, dataTime.month, dataTime.year, (inputString.toInt())); break;
+        }
+        else
+        {
+          if (inChar == 3)
+          {
+            switch (tempIndex)
+            {
+            case 0:
+              dataTime.hour = inputString.toInt();
+              break;
+            case 1:
+              dataTime.minute = inputString.toInt();
+              break;
+            case 2:
+              dataTime.second = inputString.toInt();
+              break;
+            case 3:
+              dataTime.date = inputString.toInt();
+              break;
+            case 4:
+              dataTime.month = inputString.toInt();
+              break;
+            case 5:
+              dataTime.year = inputString.toInt();
+              break;
+            case 6:
+              dataTime.day = inputString.toInt();
+              break;
             }
             tempIndex++;
-          } else {
-            if (inChar == 4) {
+          }
+          else
+          {
+            if (inChar == 4)
+            {
               hasData = 1;
               canResiveData = 0;
-            } else {
+              rtc.setTime(dataTime.second, dataTime.minute, dataTime.hour, dataTime.date, dataTime.month, dataTime.year, dataTime.day);
+            }
+            else
+            {
               inputString += inChar;
             }
           }
@@ -56,11 +86,9 @@ void loop()
     }
   }
 
-
-
   if (1)
   {
-    if (! _gen1I)
+    if (!_gen1I)
     {
       _gen1I = 1;
       _gen1O = 1;
@@ -69,66 +97,54 @@ void loop()
   }
   else
   {
-    _gen1I = 0 ;
+    _gen1I = 0;
     _gen1O = 0;
   }
-  if (_gen1I )
+  if (_gen1I)
   {
-    if ( flprog::isTimer ( _gen1P , 250 ))
+    if (flprog::isTimer(_gen1P, 500))
     {
       _gen1P = millis();
-      _gen1O = ! _gen1O;
+      _gen1O = !_gen1O;
     }
   }
   if (_gen1O)
   {
-    if (! _csb1)
+    if (!_csb1)
     {
-      get3231Date();
-      Serial.write (1);
-      Serial.write (2);
-      Serial.print (dataTime.hour);
-      Serial.write (3);
-      Serial.write (2);
-      Serial.print (dataTime.minute);
-      Serial.write (3);
-      Serial.write (2);
-      Serial.print (dataTime.second);
-      Serial.write (3);
-      Serial.write (2);
-      Serial.print (dataTime.date);
-      Serial.write (3);
-      Serial.write (2);
-      Serial.print (dataTime.month);
-      Serial.write (3);
-      Serial.write (2);
-      Serial.print (dataTime.day);
-      Serial.write (3);
-      Serial.write (2);
-      Serial.print ((dataTime.year)-2000);
-      Serial.write (3);
-      Serial.write (4);
+      Serial.write(1);
+      Serial.write(2);
+      Serial.print(rtc.getHour());
+      Serial.write(3);
+      Serial.write(2);
+      Serial.print(rtc.getMinute());
+      Serial.write(3);
+      Serial.write(2);
+      Serial.print(rtc.getSecond());
+      Serial.write(3);
+      Serial.write(2);
+      Serial.print(rtc.getDate());
+      Serial.write(3);
+      Serial.write(2);
+      Serial.print(rtc.gertMonth());
+      Serial.write(3);
+      Serial.write(2);
+      Serial.print(rtc.getDay());
+      Serial.write(3);
+      Serial.write(2);
+      Serial.print(rtc.getYear());
+      Serial.write(3);
+      Serial.write(4);
       _csb1 = 1;
     }
-  } else {
+  }
+  else
+  {
     _csb1 = 0;
   }
-  if (hasData) {
+  if (hasData)
+  {
     canResiveData = 1;
     hasData = 0;
   }
 }
-
-void get3231Date()
-{
-  dataTime = rtc.getTime();
-}
-
-
-void set3231Date(byte sec, byte  minut, byte hou, byte dat, byte mo, byte ye, byte daW)
-{
-  rtc.setTime(sec, minut, hou,  dat, mo, ye,daW );
-  get3231Date();
-}
-
-

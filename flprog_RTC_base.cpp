@@ -17,11 +17,6 @@ uint8_t FLProgRTCBase::ds_dim(uint8_t i)
     return (i < 7) ? ((i == 1) ? 28 : ((i & 1) ? 30 : 31)) : ((i & 1) ? 31 : 30);
 }
 
-void FLProgRTCBase::setTime(DateTime time)
-{
-    setTime(time.second, time.minute, time.hour, time.date, time.month, time.year, time.day);
-}
-
 uint32_t FLProgRTCBase::getUnix(int16_t gmt)
 {
     if (abs(gmt) <= 12)
@@ -223,3 +218,88 @@ char *FLProgRTCBase::gettime(const char *str)
     return charReturn;
 }
 
+void FLProgRTCBase::addSecond()
+{
+    if (now.second < 59)
+    {
+        now.second++;
+        return;
+    }
+    now.second = 0;
+    addMinute();
+}
+
+void FLProgRTCBase::addMinute()
+{
+    if (now.minute < 59)
+    {
+        now.minute++;
+        return;
+    }
+    now.minute = 0;
+    addHour();
+}
+
+void FLProgRTCBase::addHour()
+{
+    if (now.hour < 23)
+    {
+        now.hour++;
+        return;
+    }
+    now.hour = 0;
+    addData();
+}
+
+void FLProgRTCBase::addData()
+{
+    uint8_t daysInMonth;
+    if (now.month == 2)
+    {
+        daysInMonth = 28 + ((2000 + now.year) % 4 ? 0 : 1);
+    }
+    else
+    {
+        daysInMonth = 30 + ((now.month + (now.month > 7 ? 1 : 0)) % 2);
+    }
+    now.day++;
+    if (now.day > 6)
+    {
+        now.day = 0;
+    }
+    if (now.date < (daysInMonth - 1))
+    {
+        now.date++;
+
+        return;
+    }
+    now.date = 1;
+    addMonth();
+}
+
+void FLProgRTCBase::addMonth()
+{
+    if (now.month < 12)
+    {
+        now.month++;
+        return;
+    }
+    now.month = 1;
+    now.year++;
+}
+
+void FLProgRTCBase::calculationTime()
+{
+    uint32_t currentTime = millis();
+    uint16_t diff = flprog::difference32(startCalculationTime, currentTime);
+    uint8_t newSec = diff / 1000;
+    if (newSec < 1)
+    {
+        return;
+    }
+    startCalculationTime = flprog::timeBack(diff - (newSec * 1000));
+    for (uint8_t i = 0; i < newSec; i++)
+    {
+        addSecond();
+    }
+}
