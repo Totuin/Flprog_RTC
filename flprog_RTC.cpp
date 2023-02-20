@@ -8,10 +8,23 @@ FLProgI2CRTC::FLProgI2CRTC(FLProgI2C *device, uint8_t addr)
 
 void FLProgI2CRTC::pool()
 {
-    if ((startTime == 0) || (flprog::isTimer(startTime, 250)))
+    if ((startReadTime == 0) || (flprog::isTimer(startReadTime, reqestPeriod)))
     {
-        startTime = millis();
+        startReadTime = millis();
+        startCalculationTime = millis();
         readTime();
+    }
+    if (flprog::isTimer(startCalculationTime, 250))
+    {
+        if (isInit)
+        {
+            calculationTime();
+        }
+        else
+        {
+            readTime();
+            startReadTime = millis();
+        }
     }
 }
 
@@ -38,8 +51,25 @@ uint8_t FLProgI2CRTC::encodeRegister(int8_t data)
     return (((data / 10) << 4) | (data % 10));
 }
 
+void FLProgI2CRTC::initDevice()
+{
+    if (i2cDevice->findAddr(addres))
+    {
+        isInit = true;
+        readTime();
+        return;
+    }
+    codeError = FLPROG_SENSOR_DEVICE_NOT_FOUND_ERROR;
+}
+
 void FLProgI2CRTC::readTime()
 {
+    if (!isInit)
+    {
+        initDevice();
+        return;
+    }
+
     uint8_t data[7];
     codeError = i2cDevice->fullWrite(addres, 0x0);
     if (codeError)
@@ -59,17 +89,16 @@ void FLProgI2CRTC::readTime()
     now.day = data[3];
     now.date = unpackRegister(data[4]);
     now.month = unpackRegister(data[5]);
-    now.year = unpackRegister(data[6]) + 2000;
+    now.year = unpackRegister(data[6]);
 }
 
-void FLProgI2CRTC::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year, uint8_t day)
+void FLProgI2CRTC::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint8_t year, uint8_t day)
 {
     month = constrain(month, 1, 12);
     date = constrain(date, 0, ds_dim(month - 1));
     seconds = constrain(seconds, 0, 59);
     minutes = constrain(minutes, 0, 59);
     hours = constrain(hours, 0, 23);
-    year -= 2000;
     uint8_t data[8];
     data[0] = 0x00;
     data[1] = encodeRegister(seconds);
@@ -129,4 +158,89 @@ float FLProgI2CRTC::getTemperatureFloat(void)
 int FLProgI2CRTC::getTemperature(void)
 {
     return (getTemperatureRaw() >> 2);
+}
+
+void FLProgI2CRTC::calculationTime()
+{
+    uint32_t currentTime = millis();
+    uint32_t newSec = (flprog::difference32(startCalculationTime, (currentTime))) / 1000;
+    if (!(newSec > 0))
+    {
+        return;
+    }
+    startCalculationTime = flprog::timeBack(currentTime - (newSec * 1000));
+    for (uint32_t i = 0; i < newSec; i++)
+    {
+        addSecond();
+    }
+}
+
+void FLProgI2CRTC::addSecond()
+{
+    if (now.second < 59)
+    {
+        now.second++;
+        return;
+    }
+    now.second = 0;
+    addMinute();
+}
+
+void FLProgI2CRTC::addMinute()
+{
+    if (now.minute < 59)
+    {
+        now.minute++;
+        return;
+    }
+    now.minute = 0;
+    addHour();
+}
+
+void FLProgI2CRTC::addHour()
+{
+    if (now.hour < 23)
+    {
+        now.hour++;
+        return;
+    }
+    now.hour = 0;
+    addData();
+}
+
+void FLProgI2CRTC::addData()
+{
+    uint8_t daysInMonth;
+    if (now.month == 2)
+    {
+        daysInMonth = 28 + ((2000 + now.year) % 4 ? 0 : 1);
+    }
+    else
+    {
+        daysInMonth = 30 + ((now.month + (now.month > 7 ? 1 : 0)) % 2);
+    }
+    now.day++;
+    if (now.day > 6)
+    {
+        now.day = 0;
+    }
+    if (now.date < (daysInMonth - 1))
+    {
+        now.date++;
+
+        return;
+    }
+    now.date = 1;
+    addMonth();
+}
+
+void FLProgI2CRTC::addMonth()
+{
+    if (now.month < 12)
+    {
+        now.month++;
+        return;
+    }
+    now.month = 1;
+    now.year++;
 }
