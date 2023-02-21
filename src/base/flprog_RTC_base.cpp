@@ -29,7 +29,7 @@ uint32_t FLProgRTCBase::getUnix(int16_t gmt)
     return (((now.date - 1 + dm + ((y + 1) / 4) - ((y + 69) / 100) + ((y + 369) / 100 / 4) + 365 * (y - my)) * 24ul + now.hour) * 60ul + now.minute - gmt) * 60ul + now.second;
 }
 
-void FLProgRTCBase::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year)
+void FLProgRTCBase::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint8_t year)
 {
     uint8_t day = getWeekDay(year, month, date);
     setTime(seconds, minutes, hours, date, month, year, day);
@@ -145,7 +145,7 @@ uint8_t FLProgRTCBase::checkChar(char val, uint8_t index)
     return index + 1;
 }
 
-void FLProgRTCBase::blinktime(uint8_t blinkRazrad, float blinkPeriod = 1)
+void FLProgRTCBase::blinktime(uint8_t blinkRazrad, float blinkPeriod)
 {
     valBlink = blinkRazrad;
     valFrequency = uint32_t(1000 / blinkPeriod);

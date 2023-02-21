@@ -42,8 +42,8 @@ public:
     uint8_t getDate() { return now.date; };
     uint8_t gertMonth() { return now.month; };
     uint16_t getYear() { return now.year; };
-    void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year);
-    virtual void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year, uint8_t day){};
+    void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint8_t year);
+    virtual void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint8_t year, uint8_t day){};
     uint32_t getUnix(int16_t gmt); // получить unix время (указать свой часовой пояс в часах ИЛИ минутах)
     char *gettime(String);         //	Определяем функцию «дублёр» получения даты и времени из переменных	(строка с параметрами)
     char *gettime(const char *);   //	Объявляем функцию получения даты и времени ввиде строки				(строка с параметрами)

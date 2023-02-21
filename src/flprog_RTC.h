@@ -1,8 +1,22 @@
 #pragma once
 #include "Arduino.h"
+
+#ifdef _STM32_DEF_
+#define STM32_SYSTEM_RTC
+#else
+#define SOFTWARE_SYSTEM_RTC
+#endif
+
 #include "flprogUtilites.h"
-#include "flprog_RTC_base.h"
-#include "flprogAvrSysRTC.h"
+#include "base\flprog_RTC_base.h"
+
+#if defined(STM32_SYSTEM_RTC)
+#include "flprogSTM32RTC.h"
+#endif
+
+#if defined(SOFTWARE_SYSTEM_RTC)
+#include "flprogAvrSoftRTC.h"
+#endif
 
 class FLProgI2CRTC : public FLProgRTCBase
 {
