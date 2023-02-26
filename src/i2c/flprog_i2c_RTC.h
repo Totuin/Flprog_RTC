@@ -1,5 +1,6 @@
 #pragma once
 #include "Arduino.h"
+#include "flprogI2C.h"
 #include "flprog_RTC.h"
 
 class FLProgI2CRTC : public FLProgRTCBase
