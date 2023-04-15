@@ -20,7 +20,7 @@ protected:
     void initDevice();
     virtual void setInitData(){};
     uint8_t addres;
-    FLProgI2C *i2cDevice;
+    AbstractFLProgI2C *i2cDevice;
     uint32_t speed = FLPROG_I2CSPEED;
     bool isInit = false;
     uint32_t startReadTime = 0;
@@ -30,7 +30,7 @@ protected:
 class FLProgDS1307 : public FLProgI2CRTC
 {
 public:
-    FLProgDS1307(FLProgI2C *device, uint8_t addr = 0x68);
+    FLProgDS1307(AbstractFLProgI2C *device, uint8_t addr = 0x68);
 
 protected:
     virtual void setInitData();
@@ -39,7 +39,7 @@ protected:
 class FLProgDS3231 : public FLProgI2CRTC
 {
 public:
-    FLProgDS3231(FLProgI2C *device, uint8_t addr = 0x68);
+    FLProgDS3231(AbstractFLProgI2C *device, uint8_t addr = 0x68);
 
 protected:
     virtual void setInitData();

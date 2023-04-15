@@ -151,7 +151,7 @@ int FLProgI2CRTC::getTemperature(void)
 }
 
 //---------------DS1307-----------------
-FLProgDS1307::FLProgDS1307(FLProgI2C *device, uint8_t addr)
+FLProgDS1307::FLProgDS1307(AbstractFLProgI2C *device, uint8_t addr)
 {
     i2cDevice = device;
     addres = addr;
@@ -210,7 +210,7 @@ void FLProgDS1307::setInitData()
 }
 
 //---------------DS3231-----------------
-FLProgDS3231::FLProgDS3231(FLProgI2C *device, uint8_t addr)
+FLProgDS3231::FLProgDS3231(AbstractFLProgI2C *device, uint8_t addr)
 {
     i2cDevice = device;
     addres = addr;
