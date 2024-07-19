@@ -46,7 +46,7 @@ char *FLProgRTCBase::gettime(String str)
 void FLProgRTCBase::setMemoryForString(const char *str)
 {
     uint8_t charIndex, stringSize;
-    bool f;
+   // bool f;
     stringSize = strlen(str) + 1;
     for (charIndex = 0; charIndex < strlen(str); charIndex++)
     {

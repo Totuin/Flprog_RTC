@@ -1,7 +1,5 @@
 #include "flprogSTM32RTC.h"
-FLProgSystemRTC::FLProgSystemRTC()
-{
-}
+#ifdef _STM32_DEF_
 
 void FLProgSystemRTC::pool()
 {
@@ -44,4 +42,4 @@ void FLProgSystemRTC::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, u
     RTC_SetDate(year, month, date, day);
     readTime();
 }
-
+#endif

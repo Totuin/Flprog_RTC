@@ -1,4 +1,5 @@
 #pragma once
+/*
 #include "Arduino.h"
 #include "flprog_RTC.h"
 #ifndef _BV
@@ -33,3 +34,4 @@ protected:
     uint32_t reqestPeriod = 60000;
     uint8_t varI;
 };
+*/

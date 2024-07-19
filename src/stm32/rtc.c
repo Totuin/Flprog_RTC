@@ -33,7 +33,7 @@
   *
   ******************************************************************************
   */
-
+#ifdef _STM32_DEF_
 #include "rtc.h"
 #include "stm32yyxx_ll_rtc.h"
 #include <string.h>
@@ -1088,3 +1088,4 @@ void RTC_StoreDate(void)
 #endif /* HAL_RTC_MODULE_ENABLED  && !HAL_RTC_MODULE_ONLY */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+#endif

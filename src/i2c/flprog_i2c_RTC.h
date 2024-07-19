@@ -1,4 +1,5 @@
 #pragma once
+/*
 #include "Arduino.h"
 #include "flprogI2C.h"
 #include "flprog_RTC.h"
@@ -44,3 +45,4 @@ public:
 protected:
     virtual void setInitData();
 };
+*/

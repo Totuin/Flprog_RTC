@@ -1,5 +1,5 @@
 #include "flprog_ds1302.h"
-
+/*
 FLProgDS1302::FLProgDS1302(uint8_t res, uint8_t clk, uint8_t dat)
 {
     pinRES = res;
@@ -146,3 +146,5 @@ uint8_t FLProgDS1302::BcdToBin24Hour(uint8_t bcdHour)
     }
     return hour;
 }
+
+*/

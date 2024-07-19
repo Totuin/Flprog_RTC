@@ -35,6 +35,7 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #pragma once
+#ifdef _STM32_DEF_
 #define __RTC_H
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
@@ -207,3 +208,4 @@ void RTC_setPrediv(int8_t asynch, int16_t synch);
 #endif /* HAL_RTC_MODULE_ENABLED  && !HAL_RTC_MODULE_ONLY */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+#endif
