@@ -1,12 +1,20 @@
+
 #include "flprogSTM32RTC.h"
-#ifdef _STM32_DEF_
+
+FLProgSystemRTC::FLProgSystemRTC()
+{
+}
 
 void FLProgSystemRTC::pool()
 {
+
+    readTime();
+    /*
     if ((startReadTime == 0) || (flprog::isTimer(startReadTime, reqestPeriod)))
     {
-        readTime();
+
     }
+    */
 }
 
 void FLProgSystemRTC::readTime()
@@ -20,14 +28,21 @@ void FLProgSystemRTC::readTime()
     hourAM_PM_t period;
     RTC_GetDate(&year, &month, &data, &day);
     RTC_GetTime(&hour, &minute, &second, &subSec, &period);
-    now.second = second;
-    now.minute = minute;
-    now.hour = hour;
-    now.day = day;
-    now.date = data;
-    now.month = month;
-    now.year = year;
-    startCalculationTime = millis();
+    RT_HW_Base.unixSetTimeDate(hour, minute, second, data, month, year);
+    RT_HW_Base.unixSetTotal();
+
+    /*
+
+     RT_HW_Base..unixID.timeUNIX++;
+  now.second = second;
+   now.minute = minute;
+   now.hour = hour;
+   now.day = day;
+   now.date = data;
+   now.month = month;
+   now.year = year;
+   startCalculationTime = millis();
+   */
 }
 
 void FLProgSystemRTC::initDevice()
@@ -42,4 +57,3 @@ void FLProgSystemRTC::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, u
     RTC_SetDate(year, month, date, day);
     readTime();
 }
-#endif
