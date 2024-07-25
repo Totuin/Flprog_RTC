@@ -4,11 +4,23 @@
 #######################################
 # # Datatypes (KEYWORD1)
 #######################################
+FLProgRTCBase	KEYWORD1
 FLProgSystemRTC	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
+getDate	KEYWORD2
+getDay	KEYWORD2
+getError	KEYWORD2
+getGmt	KEYWORD2
+getHour	KEYWORD2
+getMinute	KEYWORD2
+getMonth	KEYWORD2
+getSecond	KEYWORD2
+getTime	KEYWORD2
+getUnix	KEYWORD2
+getYear	KEYWORD2
 pool	KEYWORD2
 setTime	KEYWORD2
 
