@@ -7,6 +7,7 @@
 #ifdef _STM32_DEF_
 #include "stm32/flprogSTM32RTC.h"
 #else
+#define SOFTWARE_SYSTEM_RTC
 #include "software/flprogAvrSoftRTC.h"
 #endif
 

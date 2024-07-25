@@ -35,6 +35,7 @@
   */
 
 #include "rtc.h"
+#ifdef _STM32_DEF_
 #include "stm32yyxx_ll_rtc.h"
 #include <string.h>
 #if defined(HAL_RTC_MODULE_ENABLED) && !defined(HAL_RTC_MODULE_ONLY)
@@ -1088,3 +1089,4 @@ void RTC_StoreDate(void)
 #endif /* HAL_RTC_MODULE_ENABLED  && !HAL_RTC_MODULE_ONLY */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+#endif

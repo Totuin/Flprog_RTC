@@ -18,12 +18,13 @@ public:
     uint32_t getUnix() { return now.getUnix(); };
     int16_t getGmt() { return now.getGmt(); };
 
-    void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint8_t year);
-    virtual void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint8_t year, uint8_t day) = 0;
+    void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year);
+    void setGmt(int16_t gmt) { now.settGmt(gmt) };
 
     virtual void pool() {};
 
 protected:
+    virtual void privateSetTime() {};
     void calculationTime();
     FLProgUnixTime now;
     uint8_t _codeError = 0;
