@@ -19,7 +19,7 @@ public:
     int16_t getGmt() { return now.getGmt(); };
 
     void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year);
-    void setGmt(int16_t gmt) { now.settGmt(gmt) };
+    void setGmt(int16_t gmt) { now.setGmt(gmt); };
 
     virtual void pool() {};
 

@@ -5,9 +5,16 @@
 #include "base/flprog_RTC_base.h"
 
 #ifdef _STM32_DEF_
-#include "stm32/flprogSTM32RTC.h"
+#define FLPROG_STM32_SYSTEM_RTC
 #else
 #define SOFTWARE_SYSTEM_RTC
+#endif
+
+#ifdef FLPROG_STM32_SYSTEM_RTC
+#include "flprogSTM32RTC.h"
+#endif
+
+#ifdef SOFTWARE_SYSTEM_RTC
 #include "software/flprogAvrSoftRTC.h"
 #endif
 

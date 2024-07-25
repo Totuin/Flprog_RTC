@@ -5,6 +5,7 @@
 class FLProgSystemRTC : public FLProgRTCBase
 {
 public:
+    FLProgSystemRTC(int16_t gmt = 0) { setGmt(gmt); };
     virtual void pool() { calculationTime(); };
 
 protected:
