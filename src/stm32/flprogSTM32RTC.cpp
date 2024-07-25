@@ -28,8 +28,8 @@ void FLProgSystemRTC::readTime()
     hourAM_PM_t period;
     RTC_GetDate(&year, &month, &data, &day);
     RTC_GetTime(&hour, &minute, &second, &subSec, &period);
-    RT_HW_Base.unixSetTimeDate(hour, minute, second, data, month, year);
-    RT_HW_Base.unixSetTotal();
+   // RT_HW_Base.unixSetTimeDate(hour, minute, second, data, month, year);
+   // RT_HW_Base.unixSetTotal();
 
     /*
 

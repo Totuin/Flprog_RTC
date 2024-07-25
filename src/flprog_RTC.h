@@ -2,7 +2,7 @@
 
 #include "Arduino.h"
 #include "flprogUtilites.h"
-//#include "base/flprog_RTC_base.h"
+#include "base/flprog_RTC_base.h"
 
 #ifdef _STM32_DEF_
 #include "stm32/flprogSTM32RTC.h"
