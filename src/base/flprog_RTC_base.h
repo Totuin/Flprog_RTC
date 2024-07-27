@@ -19,8 +19,15 @@ public:
     int16_t getGmt() { return now.getGmt(); };
 
     void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year);
-    void setGmt(int16_t gmt) { now.setGmt(gmt); };
-
+    void setGmt(int16_t gmt);
+    void setUnix(uint32_t unixTime);
+    void setSecond(uint8_t second);
+    void setMinute(uint8_t minute);
+    void setHour(uint8_t hour);
+    void setDate(uint8_t date);
+    void settMonth(uint8_t month);
+    void setYear(uint16_t year);
+   
     virtual void pool() {};
 
 protected:
