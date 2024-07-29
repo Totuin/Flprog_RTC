@@ -7,24 +7,96 @@ FLProgRtcAlarm::FLProgRtcAlarm(FLProgUnixTime *time, uint8_t eventDurationMode)
     setDaily(true);
 }
 
-bool FLProgRtcAlarm::getStatus()
+void FLProgRtcAlarm::pool()
 {
-    return _status;
-    /*
     if (!_enable)
     {
-        return false;
+        _status = false;
+        _oldStatus = false;
     }
-    if (!_status)
+    if (_status)
     {
-        return false;
+        if (_eventDurationMode == FLPROG_ALARM_EVENT_LATCH)
+        {
+            return;
+        }
+        if (_eventDurationMode == FLPROG_ALARM_EVENT_ONLY)
+        {
+            _status = false;
+            return;
+        }
+        if (flprog::isTimer(_eventStart, _eventDuration))
+        {
+            _status = false;
+        }
+        return;
     }
-    if (_resetStatus)
+    if (_unixCash == _time->getUnix())
     {
-        return false;
+        return;
     }
-    return true;
-    */
+    _unixCash = _time->getUnix();
+    bool temp = checkTime();
+    if (temp)
+    {
+        if (!_oldStatus)
+        {
+            _status = temp;
+            _eventStart = millis();
+        }
+    }
+    _oldStatus = temp;
+}
+
+bool FLProgRtcAlarm::checkTime()
+{
+    if (_second < 60)
+    {
+        if (_time->getSecond() != _second)
+        {
+            return false;
+        }
+    }
+    if (_minute < 60)
+    {
+        if (_time->getMinute() != _minute)
+        {
+            return false;
+        }
+    }
+    if (_hour < 24)
+    {
+        if (_time->getHour() != _hour)
+        {
+            return false;
+        }
+    }
+    if (_date < 32)
+    {
+        if (_time->getDate() != _date)
+        {
+            return false;
+        }
+    }
+    if (_month < 13)
+    {
+        if (_time->getMonth() != _month)
+        {
+            return false;
+        }
+    }
+    if (_year > -1)
+    {
+        if (_time->getYear() != _year)
+        {
+            return false;
+        }
+    }
+    if (bitRead(_day, 0))
+    {
+        return true;
+    }
+    return bitRead(_day, (_time->getDay()));
 }
 
 void FLProgRtcAlarm::setDaily(bool value)
@@ -81,116 +153,4 @@ void FLProgRtcAlarm::setYear(int16_t year)
         year = year + 2000;
     }
     _year = year;
-}
-
-void FLProgRtcAlarm::pool()
-{
-    /*
-    if (_status && (!_resetStatus))
-    {
-        checkStatus();
-        return;
-    }
-     */
-    if (_unixCash == _time->getUnix())
-    {
-        return;
-    }
-
-    checkAlarm();
-}
-
-void FLProgRtcAlarm::checkStatus()
-{
-    /*
-    if (_eventDurationMode == FLPROG_ALARM_EVENT_LATCH)
-    {
-        return;
-    }
-    if (_eventDurationMode == FLPROG_ALARM_EVENT_ONLY)
-    {
-        _resetStatus = true;
-        return;
-    }
-    if (flprog::isTimer(_eventStart, _eventDuration))
-    {
-        _resetStatus = true;
-        return;
-    }
-    */
-}
-
-void FLProgRtcAlarm::checkAlarm()
-{
-    _unixCash = _time->getUnix();
-    bool temp = checkTime();
-    if (temp)
-    {
-        _status = temp;
-    }
-    /*
-    if (temp)
-    {
-        if (!_status)
-        {
-            _eventStart = millis();
-        }
-    }
-    else
-    {
-        _resetStatus = false;
-    }
-    _status = temp;
-    */
-}
-
-bool FLProgRtcAlarm::checkTime()
-{
-    if (_second < 60)
-    {
-        if (_time->getSecond() != _second)
-        {
-            return false;
-        }
-    }
-    if (_minute < 60)
-    {
-        if (_time->getMinute() != _minute)
-        {
-            return false;
-        }
-    }
-    if (_hour < 24)
-    {
-        if (_time->getHour() != _hour)
-        {
-            return false;
-        }
-    }
-    if (_date < 32)
-    {
-        if (_time->getDate() != _date)
-        {
-            return false;
-        }
-    }
-    if (_month < 13)
-    {
-        if (_time->getMonth() != _month)
-        {
-            return false;
-        }
-    }
-    if (_year > -1)
-    {
-        if (_time->getYear() != _year)
-        {
-            return false;
-        }
-    }
-    if (bitRead(_day, 0))
-    {
-        return true;
-    }
-    return bitRead(_day, (_time->getDay()));
 }

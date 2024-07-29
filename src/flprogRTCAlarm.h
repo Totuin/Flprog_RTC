@@ -32,16 +32,11 @@ public:
     void setEventDuration(uint32_t eventDuration) { _eventDuration = eventDuration; };
     void setEnable(bool value) { _enable = value; };
 
-    bool getStatus();
-
-    // void reset() { _resetStatus = true; };
+    bool getStatus(){return _status;};
     void reset() { _status = false; };
 
 private:
-    void checkStatus();
-    void checkAlarm();
     bool checkTime();
-  
 
     FLProgUnixTime *_time = 0;
     uint8_t _second = 255;
@@ -52,7 +47,7 @@ private:
     int16_t _year = -1;
     uint8_t _day = 0;
     bool _status = false;
-    bool _resetStatus = false;
+    bool _oldStatus = false;
     uint32_t _unixCash = 0;
     uint8_t _eventDurationMode = FLPROG_ALARM_EVENT_TIME;
     uint32_t _eventDuration = 100;
