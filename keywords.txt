@@ -5,6 +5,7 @@
 # # Datatypes (KEYWORD1)
 #######################################
 FLProgRTCBase	KEYWORD1
+FLProgRtcAlarm	KEYWORD1
 FLProgSystemRTC	KEYWORD1
 
 #######################################
@@ -18,17 +19,41 @@ getHour	KEYWORD2
 getMinute	KEYWORD2
 getMonth	KEYWORD2
 getSecond	KEYWORD2
+getStatus	KEYWORD2
 getTime	KEYWORD2
 getUnix	KEYWORD2
 getYear	KEYWORD2
 pool	KEYWORD2
+reset	KEYWORD2
+setDaily	KEYWORD2
+setDate	KEYWORD2
+setEnable	KEYWORD2
+setEventDuration	KEYWORD2
+setEventMode	KEYWORD2
+setFriday	KEYWORD2
 setGmt	KEYWORD2
+setHour	KEYWORD2
+setMinute	KEYWORD2
+setMonday	KEYWORD2
+setMonth	KEYWORD2
+setSaturday	KEYWORD2
+setSeccond	KEYWORD2
+setSecond	KEYWORD2
+setSunday	KEYWORD2
+setThursday	KEYWORD2
 setTime	KEYWORD2
+setTuesday	KEYWORD2
 setUnix	KEYWORD2
+setWednesday	KEYWORD2
+setYear	KEYWORD2
+settMonth	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
+FLPROG_ALARM_EVENT_LATCH	LITERAL1
+FLPROG_ALARM_EVENT_ONLY	LITERAL1
+FLPROG_ALARM_EVENT_TIME	LITERAL1
 FLPROG_STM32_SYSTEM_RTC	LITERAL1
 SOFTWARE_SYSTEM_RTC	LITERAL1
 _STM32_DEF_	LITERAL1
