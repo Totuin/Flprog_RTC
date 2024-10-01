@@ -80,6 +80,10 @@ void FLProgRTCBase::setYear(uint16_t year)
 
 void FLProgRTCBase::setGmt(int16_t gmt)
 {
+    if (1)
+    {
+        return; 
+    }
     if (now.getGmt() == gmt)
     {
         return;
