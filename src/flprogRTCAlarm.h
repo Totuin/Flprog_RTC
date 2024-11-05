@@ -1,7 +1,7 @@
 #pragma once
 #include "Arduino.h"
 #include "flprogUtilites.h"
-#include "flprogUnixTime.h"
+
 
 #define FLPROG_ALARM_EVENT_ONLY 0
 #define FLPROG_ALARM_EVENT_LATCH 1
@@ -10,7 +10,7 @@
 class FLProgRtcAlarm
 {
 public:
-    FLProgRtcAlarm(FLProgUnixTime *time, uint8_t eventDurationMode = FLPROG_ALARM_EVENT_TIME);
+    FLProgRtcAlarm(RT_HW_STRUCT_UNIX_ID *time, uint8_t eventDurationMode = FLPROG_ALARM_EVENT_TIME);
 
     void pool();
     void setSeccond(uint8_t second) { _second = second; };
@@ -38,7 +38,7 @@ public:
 private:
     bool checkTime();
 
-    FLProgUnixTime *_time = 0;
+    RT_HW_STRUCT_UNIX_ID *_time = 0;
     uint8_t _second = 255;
     uint8_t _minute = 255;
     uint8_t _hour = 255;

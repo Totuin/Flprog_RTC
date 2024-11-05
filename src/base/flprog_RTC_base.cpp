@@ -3,64 +3,70 @@
 void FLProgRTCBase::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year)
 {
     uint16_t tempYear = year;
-    if (tempYear < 100)
+    if (tempYear > 100)
     {
-        tempYear = tempYear + 2000;
+        tempYear = tempYear - 2000;
     }
-    if ((now.getSecond() == seconds) && (now.getMinute() == minutes) && (now.getHour() == hours) && (now.getDate() == date) && (now.getMonth() == month) && (now.getYear() == tempYear))
+    if ((getSecond() == seconds) && (getMinute() == minutes) && (getHour() == hours) && (getDate() == date) && (getMonth() == month) && (getYear() == tempYear))
     {
         return;
     }
-    now.setTime(seconds, minutes, hours, date, month, tempYear);
-    privateSetTime();
+    now()->seconds = seconds;
+    now()->minutes = minutes;
+    now()->hours = hours;
+    now()->day = date;
+    now()->month = month;
+    now()->year = tempYear;
+    privateSetUNIX();
 }
 
 void FLProgRTCBase::setSecond(uint8_t second)
 {
-    if (now.getSecond() == second)
+    if (getSecond() == second)
     {
         return;
     }
-    now.setSecond(second);
-    privateSetTime();
+    now()->seconds = second;
+    privateSetUNIX();
 }
 void FLProgRTCBase::setMinute(uint8_t minute)
 {
-    if (now.getMinute() == minute)
+    if (getMinute() == minute)
     {
         return;
     }
-    now.setMinute(minute);
-    privateSetTime();
+    now()->minutes = minute;
+    privateSetUNIX();
 }
+
 void FLProgRTCBase::setHour(uint8_t hour)
 {
-    if (now.getHour() == hour)
+    if (getHour() == hour)
     {
         return;
     }
-    now.setHour(hour);
-    privateSetTime();
+    now()->hours = hour;
+    privateSetUNIX();
 }
 
 void FLProgRTCBase::setDate(uint8_t date)
 {
-    if (now.getDate() == date)
+    if (getDate() == date)
     {
         return;
     }
-    now.setDate(date);
-    privateSetTime();
+    now()->day = date;
+    privateSetUNIX();
 }
 
 void FLProgRTCBase::settMonth(uint8_t month)
 {
-    if (now.getMonth() == month)
+    if (getMonth() == month)
     {
         return;
     }
-    now.settMonth(month);
-    privateSetTime();
+    now()->month = month;
+    privateSetUNIX();
 }
 
 void FLProgRTCBase::setYear(uint16_t year)
@@ -68,54 +74,33 @@ void FLProgRTCBase::setYear(uint16_t year)
     uint16_t tempYear = year;
     if (tempYear < 100)
     {
-        tempYear = tempYear + 2000;
+        tempYear = tempYear - 2000;
     }
-    if (now.getYear() == tempYear)
+    if (now()->year  == tempYear)
     {
         return;
     }
-    now.setYear(tempYear);
-    privateSetTime();
+    now()->year = tempYear;
+    privateSetUNIX();
 }
 
 void FLProgRTCBase::setGmt(int16_t gmt)
 {
-    if (1)
-    {
-        return; 
-    }
-    if (now.getGmt() == gmt)
+    if (getGmt() == gmt)
     {
         return;
     }
-    now.setGmt(gmt);
-    privateSetTime();
+    now()->zone =gmt;
+    privateSetTotal();
 }
 
 void FLProgRTCBase::setUnix(uint32_t unixTime)
 {
-    if (now.getUnix() == unixTime)
+    if (getUnix() == unixTime)
     {
         return;
     }
-    now.setUnix(unixTime);
-    privateSetTime();
+    now()->timeUNIX=unixTime;
+    privateSetTotal();
 }
 
-void FLProgRTCBase::calculationTime()
-{
-    uint32_t currentTime = millis();
-    uint16_t diff = flprog::difference32(startCalculationTime, currentTime);
-    uint8_t newSec = diff / 1000;
-    if (newSec < 1)
-    {
-        return;
-    }
-    startCalculationTime = flprog::timeBack(diff - (newSec * 1000));
-    uint32_t tempUnix = now.getUnix();
-    for (uint8_t i = 0; i < newSec; i++)
-    {
-        tempUnix++;
-    }
-    now.setUnix(tempUnix);
-}

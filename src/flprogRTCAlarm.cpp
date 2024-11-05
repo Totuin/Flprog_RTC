@@ -1,6 +1,6 @@
 #include "flprogRTCAlarm.h"
 
-FLProgRtcAlarm::FLProgRtcAlarm(FLProgUnixTime *time, uint8_t eventDurationMode)
+FLProgRtcAlarm::FLProgRtcAlarm(RT_HW_STRUCT_UNIX_ID *time, uint8_t eventDurationMode)
 {
     _time = time;
     _eventDurationMode = eventDurationMode;
@@ -31,11 +31,11 @@ void FLProgRtcAlarm::pool()
         }
         return;
     }
-    if (_unixCash == _time->getUnix())
+    if (_unixCash == _time->timeUNIX)
     {
         return;
     }
-    _unixCash = _time->getUnix();
+    _unixCash = _time->timeUNIX;
     bool temp = checkTime();
     if (temp)
     {
@@ -52,42 +52,42 @@ bool FLProgRtcAlarm::checkTime()
 {
     if (_second < 60)
     {
-        if (_time->getSecond() != _second)
+        if (_time->seconds != _second)
         {
             return false;
         }
     }
     if (_minute < 60)
     {
-        if (_time->getMinute() != _minute)
+        if (_time->minutes != _minute)
         {
             return false;
         }
     }
     if (_hour < 24)
     {
-        if (_time->getHour() != _hour)
+        if (_time->hours != _hour)
         {
             return false;
         }
     }
     if (_date < 32)
     {
-        if (_time->getDate() != _date)
+        if (_time->day != _date)
         {
             return false;
         }
     }
     if (_month < 13)
     {
-        if (_time->getMonth() != _month)
+        if (_time->month != _month)
         {
             return false;
         }
     }
     if (_year > -1)
     {
-        if (_time->getYear() != _year)
+        if (_time->year != _year)
         {
             return false;
         }
@@ -96,7 +96,7 @@ bool FLProgRtcAlarm::checkTime()
     {
         return true;
     }
-    return bitRead(_day, (_time->getDay()));
+    return bitRead(_day, (_time->weekDay));
 }
 
 void FLProgRtcAlarm::setDaily(bool value)

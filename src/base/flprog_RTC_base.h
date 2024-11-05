@@ -1,22 +1,20 @@
 #pragma once
 #include "Arduino.h"
 #include "flprogUtilites.h"
-#include "flprogUnixTime.h"
 
-class FLProgRTCBase
+class FLProgRTCBase : public AbstractFLProgClass
 {
 public:
-    uint8_t getError() { return _codeError; };
-    FLProgUnixTime *getTime() { return &now; };
-    uint8_t getSecond() { return now.getSecond(); };
-    uint8_t getMinute() { return now.getMinute(); };
-    uint8_t getHour() { return now.getHour(); };
-    uint8_t getDay() { return now.getDay(); };
-    uint8_t getDate() { return now.getDate(); };
-    uint8_t getMonth() { return now.getMonth(); };
-    uint16_t getYear() { return now.getYear(); };
-    uint32_t getUnix() { return now.getUnix(); };
-    int16_t getGmt() { return now.getGmt(); };
+    RT_HW_STRUCT_UNIX_ID *getTime() { return now(); };
+    uint8_t getSecond() { return now()->seconds; };
+    uint8_t getMinute() { return now()->minutes; };
+    uint8_t getHour() { return now()->hours; };
+    uint8_t getDay() { return now()->weekDay; };
+    uint8_t getDate() { return now()->day; };
+    uint8_t getMonth() { return now()->month; };
+    uint16_t getYear() { return now()->year; };
+    uint32_t getUnix() { return now()->timeUNIX; };
+    int16_t getGmt() { return now()->zone; };
 
     void setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year);
     void setGmt(int16_t gmt);
@@ -27,13 +25,11 @@ public:
     void setDate(uint8_t date);
     void settMonth(uint8_t month);
     void setYear(uint16_t year);
-   
+
     virtual void pool() {};
+    virtual RT_HW_STRUCT_UNIX_ID *now() { return 0; };
 
 protected:
-    virtual void privateSetTime() {};
-    void calculationTime();
-    FLProgUnixTime now;
-    uint8_t _codeError = 0;
-    uint32_t startCalculationTime = 0;
+    virtual void privateSetTotal() {};
+    virtual void privateSetUNIX() {}; 
 };
