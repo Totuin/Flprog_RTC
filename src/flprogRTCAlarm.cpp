@@ -148,9 +148,5 @@ void FLProgRtcAlarm::setSunday(bool value)
 
 void FLProgRtcAlarm::setYear(int16_t year)
 {
-    if ((year > -1) && (year < 100))
-    {
-        year = year + 2000;
-    }
     _year = year;
 }

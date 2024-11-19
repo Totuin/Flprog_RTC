@@ -126,7 +126,7 @@ uint8_t FLProgTimeToStringConverter::checkChar(char val, uint8_t index)
     }
     if (val == _charInput[9] /*	y	*/)
     {
-        funcFillChar((_time->year+ 2000), FLPROG_RTC_TWO_SYMBOL_TYPE, index, FLPROG_RTC_FLASH_YEAR_SYMBOL);
+        funcFillChar((_time->year), FLPROG_RTC_TWO_SYMBOL_TYPE, index, FLPROG_RTC_FLASH_YEAR_SYMBOL);
         return index + 2;
     }
     if (val == _charInput[10] /*	M	*/)
@@ -141,7 +141,7 @@ uint8_t FLProgTimeToStringConverter::checkChar(char val, uint8_t index)
     }
     if (val == _charInput[12] /*	Y	*/)
     {
-        funcFillChar((_time->year + 2000), FLPROG_RTC_FOUR_SYMBOL_TYPE, index, FLPROG_RTC_FLASH_YEAR_SYMBOL);
+        funcFillChar((_time->year), FLPROG_RTC_FOUR_SYMBOL_TYPE, index, FLPROG_RTC_FLASH_YEAR_SYMBOL);
         return index + 4;
     }
     _charReturn[index] = val;

@@ -72,11 +72,11 @@ void FLProgRTCBase::settMonth(uint8_t month)
 void FLProgRTCBase::setYear(uint16_t year)
 {
     uint16_t tempYear = year;
-    if (tempYear < 100)
+    if (tempYear > 100)
     {
         tempYear = tempYear - 2000;
     }
-    if (now()->year  == tempYear)
+    if (now()->year == tempYear)
     {
         return;
     }
@@ -90,7 +90,7 @@ void FLProgRTCBase::setGmt(int16_t gmt)
     {
         return;
     }
-    now()->zone =gmt;
+    now()->zone = gmt;
     privateSetTotal();
 }
 
@@ -100,7 +100,6 @@ void FLProgRTCBase::setUnix(uint32_t unixTime)
     {
         return;
     }
-    now()->timeUNIX=unixTime;
+    now()->timeUNIX = unixTime;
     privateSetTotal();
 }
-

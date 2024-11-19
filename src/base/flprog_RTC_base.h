@@ -12,7 +12,7 @@ public:
     uint8_t getDay() { return now()->weekDay; };
     uint8_t getDate() { return now()->day; };
     uint8_t getMonth() { return now()->month; };
-    uint16_t getYear() { return now()->year; };
+    uint16_t getYear() { return (now()->year); };
     uint32_t getUnix() { return now()->timeUNIX; };
     int16_t getGmt() { return now()->zone; };
 
