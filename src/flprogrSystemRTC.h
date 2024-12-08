@@ -3,6 +3,10 @@
 #include "flprogUtilites.h"
 #include "base/flprog_RTC_base.h"
 
+#ifdef ARDUINO_ARCH_STM32
+#include "flprogRtcStm32.h"
+#endif
+
 class FLProgSystemRTC : public FLProgRTCBase
 {
 public:
@@ -14,4 +18,12 @@ public:
 protected:
     virtual void privateSetTotal();
     virtual void privateSetUNIX();
+
+#ifdef ARDUINO_ARCH_STM32
+    void readTime();
+    void setTime();
+    bool _isInit = false;
+    uint32_t _startReadTime = flprog::timeBack(2000);
+    uint32_t _reqestPeriod = 2000;
+#endif
 };
