@@ -4,7 +4,7 @@
 FLProgSystemRTC::FLProgSystemRTC(int16_t gmt)
 {
   RT_HW_Base.unixID.zone = gmt;
-#ifdef ARDUINO_ARCH_STM32
+#ifdef FLPROG_STM32_ONBOARD_RTC_ENABLED
   FLPROG_RTC_init(HOUR_FORMAT_24, LSE_CLOCK, false);
   readTime();
 #endif
@@ -12,7 +12,7 @@ FLProgSystemRTC::FLProgSystemRTC(int16_t gmt)
 
 void FLProgSystemRTC::pool()
 {
-#ifdef ARDUINO_ARCH_STM32
+#ifdef FLPROG_STM32_ONBOARD_RTC_ENABLED
   if (flprog::isTimer(_startReadTime, _reqestPeriod))
   {
     readTime();
@@ -21,7 +21,7 @@ void FLProgSystemRTC::pool()
   {
 #endif
     RT_HW_Base.unixUpdateTime();
-#ifdef ARDUINO_ARCH_STM32
+#ifdef FLPROG_STM32_ONBOARD_RTC_ENABLED
   }
 #endif
 }
@@ -29,7 +29,7 @@ void FLProgSystemRTC::pool()
 void FLProgSystemRTC::privateSetTotal()
 {
   RT_HW_Base.unixSetTotal();
-#ifdef ARDUINO_ARCH_STM32
+#ifdef FLPROG_STM32_ONBOARD_RTC_ENABLED
   setTime();
 #endif
 }
@@ -37,12 +37,12 @@ void FLProgSystemRTC::privateSetTotal()
 void FLProgSystemRTC::privateSetUNIX()
 {
   RT_HW_Base.unixSetTimeUNIX();
-#ifdef ARDUINO_ARCH_STM32
+#ifdef FLPROG_STM32_ONBOARD_RTC_ENABLED
   setTime();
 #endif
 }
 
-#ifdef ARDUINO_ARCH_STM32
+#ifdef FLPROG_STM32_ONBOARD_RTC_ENABLED
 void FLProgSystemRTC::readTime()
 {
   uint32_t subSec;

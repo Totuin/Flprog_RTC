@@ -4,7 +4,10 @@
 #include "base/flprog_RTC_base.h"
 
 #ifdef ARDUINO_ARCH_STM32
+#if defined(HAL_RTC_MODULE_ENABLED) && !defined(HAL_RTC_MODULE_ONLY)
 #include "flprogRtcStm32.h"
+#define FLPROG_STM32_ONBOARD_RTC_ENABLED
+#endif
 #endif
 
 class FLProgSystemRTC : public FLProgRTCBase
@@ -19,7 +22,7 @@ protected:
     virtual void privateSetTotal();
     virtual void privateSetUNIX();
 
-#ifdef ARDUINO_ARCH_STM32
+#ifdef FLPROG_STM32_ONBOARD_RTC_ENABLED
     void readTime();
     void setTime();
     bool _isInit = false;
