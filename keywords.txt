@@ -41,12 +41,12 @@ setHour	KEYWORD2
 setMinute	KEYWORD2
 setMonday	KEYWORD2
 setMonth	KEYWORD2
+setNewTime	KEYWORD2
 setSaturday	KEYWORD2
 setSeccond	KEYWORD2
 setSecond	KEYWORD2
 setSunday	KEYWORD2
 setThursday	KEYWORD2
-setTime	KEYWORD2
 setTuesday	KEYWORD2
 setUnix	KEYWORD2
 setWednesday	KEYWORD2

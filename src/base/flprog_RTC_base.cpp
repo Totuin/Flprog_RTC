@@ -1,6 +1,6 @@
 #include "flprog_RTC_base.h"
 
-void FLProgRTCBase::setTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year)
+void FLProgRTCBase::setNewTime(uint8_t seconds, uint8_t minutes, uint8_t hours, uint8_t date, uint8_t month, uint16_t year)
 {
     uint16_t tempYear = year;
     if (tempYear > 100)

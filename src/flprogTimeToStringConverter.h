@@ -21,29 +21,29 @@
 class FLProgTimeToStringConverter
 {
 public:
-    FLProgTimeToStringConverter(String string, RT_HW_STRUCT_UNIX_ID *time);
-    String getTimeString();
-    String getFormatString() { return _inString; };
-    void setFormatString(String inString);
-    void blinktime(uint8_t blinkRazrad, float blinkPeriod = 1);
+  FLProgTimeToStringConverter(String string, RT_HW_STRUCT_UNIX_ID *time);
+  String getTimeString();
+  String getFormatString() { return _inString; };
+  void setFormatString(String inString);
+  void blinktime(uint8_t blinkRazrad, float blinkPeriod = 1);
 
 private:
-    void init();
-    void convertTime();
-    void setMemoryForString();
-    uint8_t checkChar(char val, uint8_t index);
-    void funcFillChar(uint8_t value, uint8_t type, uint8_t position, uint8_t blinkVal);
-    RT_HW_STRUCT_UNIX_ID *_time = 0;
-    char *_charReturn = 0;
-    char *_charString = 0;
-    String _inString = "";
-    uint32_t _unixCash = 0;
-    uint32_t _valFrequency = 1000;
-    uint8_t _valBlink = 255;
-    uint8_t _charStringSize = 0;
-    uint8_t _charReturnSize = 0;
+  void init();
+  void convertTime();
+  void setMemoryForString();
+  uint8_t checkChar(char val, uint8_t index);
+  void funcFillChar(uint8_t value, uint8_t type, uint8_t position, uint8_t blinkVal);
+  RT_HW_STRUCT_UNIX_ID *_time = 0;
+  char *_charReturn = 0;
+  char *_charString = 0;
+  String _inString = "";
+  uint32_t _unixCash = 0;
+  uint32_t _valFrequency = 1000;
+  uint8_t _valBlink = 255;
+  uint8_t _charStringSize = 0;
+  uint8_t _charReturnSize = 0;
 
-    static constexpr char *_charInput = (char *)"waAdhHimsyMDY"; //	Определяем константу-строку с символами требующими замены
-    static constexpr char *_charMidday = (char *)"ampmAMPM";     //	Определяем константу-строку для вывода полудня (am / pm / AM / PM)
-    static constexpr char *_charDayMon = (char *)"SunMonTueWedThuFriSatJanFebMarAprMayJunJulAugSepOctNovDec";
+  static constexpr char *_charInput = (char *)"waAdhHimsyMDY"; //	Определяем константу-строку с символами требующими замены
+  static constexpr char *_charMidday = (char *)"ampmAMPM";     //	Определяем константу-строку для вывода полудня (am / pm / AM / PM)
+  static constexpr char *_charDayMon = (char *)"SunMonTueWedThuFriSatJanFebMarAprMayJunJulAugSepOctNovDec";
 };
